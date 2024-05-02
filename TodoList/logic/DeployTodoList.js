@@ -18,7 +18,7 @@ const deployTodoListLogic = async () => {
   const todoListLogic = new LogicFactory(todoListManifest, wallet);
 
   // Submitting the Interaction to the network to deploy the logic
-  const ixResponse = await todoListLogic.deploy("InitOwner!");
+  const ixResponse = await todoListLogic.deploy("InitOwner");
   console.log("------ Deploying Logic ----------");
   console.log(ixResponse);
 

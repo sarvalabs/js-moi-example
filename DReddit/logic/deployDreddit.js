@@ -18,7 +18,7 @@ const deployDRedditLogic = async () => {
   const DRedditLogic = new LogicFactory(DRedditManifest, wallet);
 
   // Submitting the Interaction to the network to deploy the logic
-  const ixResponse = await DRedditLogic.deploy("Init!");
+  const ixResponse = await DRedditLogic.deploy("Init");
   console.log("------ Deploying Logic ----------");
   console.log(ixResponse);
 

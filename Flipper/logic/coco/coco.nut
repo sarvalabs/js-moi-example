@@ -1,12 +1,12 @@
 [coco]
-version = "0.3.7"
+version = "0.2.0"
 
 [module]
 name = "Flipper"
 version = "0.0.1"
-license = ""
+license = []
 repository = ""
-authors = ""
+authors = []
 
 [target]
 os = "MOI"
@@ -14,7 +14,9 @@ arch = "PISA"
 
 [target.moi]
 format = "JSON"
-output = "flipper"
+output = "flipper.json"
 
 [target.pisa]
-format = "ASM"
+format = "BIN"
+
+[dependencies.local]

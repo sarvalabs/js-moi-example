@@ -13,8 +13,8 @@ coco TodoList
 
 // The persistant state is used to define stateful
 // values managed intrinsically by the logic
-// State variables can be also be accessed by using
-// their variable names as endpoints
+// Statmemoryiables can be also be accessed by using
+// theimemoryiable names as endpoints
 state persistent:
     todos []Todo
     owner Address
@@ -35,8 +35,8 @@ class Todo:
 ///////////////////////
 
 // InitOwner!() deployer is a constructor that assigns a 
-// value to the state variable owner
-endpoint deployer InitOwner!():
+// value to the statmemoryiable owner
+endpoint deployer persistent InitOwner():
     mutate Address(Sender) -> TodoList.State.owner
 
 ////////////////////////
@@ -44,7 +44,7 @@ endpoint deployer InitOwner!():
 ///////////////////////
 
 // Function to check if the caller is the owner of the Logic
-func onlyOwner():
+func readonly onlyOwner():
     observe owner <- TodoList.State.owner:
         if(Address(Sender) != owner):
             throw "Not an Owner"
@@ -57,17 +57,17 @@ func onlyOwner():
 
 // Add!() is an invokable that adds the given Todo to
 // the list of  Todo's
-endpoint invokable AddTodo!(name String)->(addedTodo Todo):
+endpoint invokable persistent AddTodo(name String)->(addedTodo Todo):
     onlyOwner()
 
     mutate todos <- TodoList.State.todos:
-        var newTodo = Todo{id: len(todos), name: name, completed: false}
-        todos = append(todos, newTodo)
+        memory newTodo = Todo{id: len(todos), name: name, completed: false}
+        disperse append(todos, newTodo)
         yield addedTodo newTodo
 
 // MarkCompleted!() is an invokable that marks the given
 // todo as completed
-endpoint invokable MarkTodoCompleted!(id U64):
+endpoint invokable persistent MarkTodoCompleted(id U64):
     onlyOwner()
 
     mutate todos <- TodoList.State.todos:
@@ -85,7 +85,18 @@ endpoint invokable MarkTodoCompleted!(id U64):
 
 // GetTodos() is an invokable that gets all
 // the stored todos
-endpoint invokable GetTodos() -> (todos []Todo):
-    observe todos <- TodoList.State.todos
+endpoint invokable readonly GetTodos() -> (todos []Todo):   
+    memory memTodos []Todo
+    observe sTodos <- TodoList.State.todos:
+        for index, todo in sTodos:
+            memory memTodo = Todo{
+                id: todo.id,
+                name: todo.name,
+                completed: todo.completed
+            }
+            append(memTodos, memTodo)
+    todos = memTodos
+            
+
 
 

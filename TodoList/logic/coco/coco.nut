@@ -1,12 +1,12 @@
 [coco]
-version = "0.3.8"
+version = "0.2.0"
 
 [module]
 name = "TodoList"
 version = "0.0.1"
-license = ""
+license = []
 repository = ""
-authors = ""
+authors = []
 
 [target]
 os = "MOI"
@@ -14,7 +14,9 @@ arch = "PISA"
 
 [target.moi]
 format = "JSON"
-output = "todolist"
+output = "todolist.json"
 
 [target.pisa]
-format = "ASM"
+format = "BIN"
+
+[dependencies.local]

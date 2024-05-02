@@ -18,7 +18,7 @@ const deployFlipperLogic = async () => {
   const flipperLogic = new LogicFactory(flipperManifest, wallet);
 
   // Submitting the Interaction to the network to deploy the logic
-  const ixResponse = await flipperLogic.deploy("Seed!", true);
+  const ixResponse = await flipperLogic.deploy("Seed", true);
   console.log("------ Deploying Logic ----------");
   console.log(ixResponse);
 
