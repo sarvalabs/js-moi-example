@@ -21,15 +21,15 @@ state persistent:
 // Deploy Endpoints
 ///////////////////////
 
-// Init!() deployer is a constructor that leaves
-// the persistent state untouched at the deploy time.
-endpoint deployer Init!():
+// Init!() deployer is a constructor that iniitializes the persistent
+// state variable to their default values at the deploy time.
+endpoint deployer persistent Init():
     pass
 
 // Seed!() deployer is an alternate constructor
 // that sets given initial value for the logic state.
-endpoint deployer Seed!(initial Bool):
-    set!(value: initial)
+endpoint deployer persistent Seed(initial Bool):
+    set(value: initial)
 
 ////////////////////////
 // Internal Functions 
@@ -37,7 +37,7 @@ endpoint deployer Seed!(initial Bool):
 
 // set!() is a local function that
 // sets given value to the logic state
-func set!(value Bool):
+func persistent set(value Bool):
     mutate value -> Flipper.State.value
 
 // func's can only be called internally within the logic
@@ -48,7 +48,7 @@ func set!(value Bool):
 
 // Toggle!() is an invokable that flips
 // the current value of the logic state
-endpoint invokable Flip!():
+endpoint invokable persistent Flip():
     mutate value <- Flipper.State.value:
         value = !value
 
@@ -58,5 +58,5 @@ endpoint invokable Flip!():
 
 // Get() is an invokable that returns
 // the current value of the logic state
-endpoint invokable Get() -> (value Bool):
+endpoint invokable readonly Get() -> (value Bool):
     observe value <- Flipper.State.value

@@ -1,5 +1,5 @@
 {
-  "syntax": "0.1.0",
+  "syntax": 1,
   "engine": {
     "kind": "PISA",
     "flags": []
@@ -9,7 +9,7 @@
       "ptr": 0,
       "kind": "state",
       "data": {
-        "kind": "persistent",
+        "mode": "persistent",
         "fields": [
           {
             "slot": 0,
@@ -26,13 +26,15 @@
       ],
       "kind": "routine",
       "data": {
-        "name": "Init!",
+        "name": "Init",
+        "mode": "persistent",
         "kind": "deployer",
         "accepts": [],
         "returns": [],
         "executes": {
           "bin": []
-        }
+        },
+        "catches": []
       }
     },
     {
@@ -43,7 +45,8 @@
       ],
       "kind": "routine",
       "data": {
-        "name": "Seed!",
+        "name": "Seed",
+        "mode": "persistent",
         "kind": "deployer",
         "accepts": [
           {
@@ -54,14 +57,26 @@
         ],
         "returns": [],
         "executes": {
-          "asm": [
-            "CARGS $0",
-            "OBTAIN $1 &0",
-            "SETFLD $0 &0 $1",
-            "LDPTR1 $1 0x3",
-            "CALLR $0 $1 $0"
+          "bin": [
+            10,
+            0,
+            4,
+            1,
+            0,
+            82,
+            0,
+            0,
+            1,
+            17,
+            1,
+            3,
+            12,
+            0,
+            1,
+            0
           ]
-        }
+        },
+        "catches": []
       }
     },
     {
@@ -71,8 +86,9 @@
       ],
       "kind": "routine",
       "data": {
-        "name": "set!",
-        "kind": "local",
+        "name": "set",
+        "mode": "persistent",
+        "kind": "internal",
         "accepts": [
           {
             "slot": 0,
@@ -82,11 +98,21 @@
         ],
         "returns": [],
         "executes": {
-          "asm": [
-            "OBTAIN $0 &0",
-            "PSAVE $0 &0"
+          "bin": [
+            128,
+            0,
+            0,
+            4,
+            1,
+            0,
+            48,
+            0,
+            1,
+            129,
+            0
           ]
-        }
+        },
+        "catches": []
       }
     },
     {
@@ -96,17 +122,30 @@
       ],
       "kind": "routine",
       "data": {
-        "name": "Flip!",
+        "name": "Flip",
+        "mode": "persistent",
         "kind": "invokable",
         "accepts": [],
         "returns": [],
         "executes": {
-          "asm": [
-            "PLOAD $0 &0",
-            "NOT $0 $0",
-            "PSAVE $0 &0"
+          "bin": [
+            128,
+            0,
+            0,
+            49,
+            1,
+            0,
+            98,
+            1,
+            1,
+            48,
+            0,
+            1,
+            129,
+            0
           ]
-        }
+        },
+        "catches": []
       }
     },
     {
@@ -117,6 +156,7 @@
       "kind": "routine",
       "data": {
         "name": "Get",
+        "mode": "readonly",
         "kind": "invokable",
         "accepts": [],
         "returns": [
@@ -127,11 +167,18 @@
           }
         ],
         "executes": {
-          "asm": [
-            "PLOAD $0 &0",
-            "YIELD $0 &0"
+          "bin": [
+            128,
+            0,
+            0,
+            5,
+            0,
+            0,
+            130,
+            0
           ]
-        }
+        },
+        "catches": []
       }
     }
   ]

@@ -32,7 +32,7 @@ class Post:
 
 // Init!() deployer is a constructor that leaves
 // the persistent state untouched at the deploy time.
-endpoint deployer Init!():
+endpoint deployer persistent Init():
     pass
 
 // pass means do nothing
@@ -46,8 +46,8 @@ endpoint deployer Init!():
 
 // CreatePost!() is an invokable that creates & adds a new post
 // and also returns the new post
-endpoint invokable CreatePost!(content String) -> (createdPost Post):
-    var newPost = Post{
+endpoint invokable persistent CreatePost(content String) -> (createdPost Post):
+    memory newPost = Post{
         creator: Address(Sender),
         content: content,
         upvotes: 0,
@@ -59,18 +59,18 @@ endpoint invokable CreatePost!(content String) -> (createdPost Post):
     // block will be assigned to DReddit.State.posts)
     mutate posts <- DReddit.State.posts:
         newPost.id = len(posts)
-        posts = append(posts, newPost)
+        disperse append(posts, newPost)
         yield createdPost newPost // To return Created Post
 
 // Upvote!() is an invokable to upvote
 // the post with given id
-endpoint invokable Upvote!(id U64):
-    var user Address = Address(Sender)
-    var usersVote U64
+endpoint invokable persistent Upvote(id U64):
+    memory user Address = Address(Sender)
+    memory usersVote U64
 
     // observe is used to read from the state
     observe votes <- DReddit.State.votes:
-        usersVote = votes[user][id]
+        usersVote = votes[user][id]  // This is able to read the value from a key that not exists
 
     // throw is used to throw an error 
     // statement reverting all the state changes
@@ -79,6 +79,8 @@ endpoint invokable Upvote!(id U64):
     
     // Mutating user's vote for the given post
     mutate votes <- DReddit.State.votes:
+        if(usersVote == 0):
+            disperse make(Map[U64]U64) -> votes[user] // An extra step - throwing key does not exist
         votes[user][id] = 1
 
     // Updating Post's total count of downvotes and upvotes
@@ -89,9 +91,9 @@ endpoint invokable Upvote!(id U64):
 
 // Downvote!() is an invokable to downvote
 // the post with given id
-endpoint invokable Downvote!(id U64):
-    var user Address = Address(Sender)
-    var usersVote U64
+endpoint invokable persistent Downvote(id U64):
+    memory user Address = Address(Sender)
+    memory usersVote U64
 
     observe votes <- DReddit.State.votes:
         usersVote = votes[user][id]
@@ -101,6 +103,8 @@ endpoint invokable Downvote!(id U64):
     
     // Mutating user's vote for the given post
     mutate votes <- DReddit.State.votes:
+        if(usersVote == 0):
+            disperse make(Map[U64]U64) -> votes[user]
         votes[user][id] = 2
 
     // Updating Post's total count of downvotes and upvotes
@@ -114,7 +118,19 @@ endpoint invokable Downvote!(id U64):
 ////////////////////
 
 endpoint invokable GetPosts() -> (posts []Post):
-    observe posts <- DReddit.State.posts
+    memory memPosts []Post
+    observe sPosts <- DReddit.State.posts:
+        for index, post in sPosts:
+            memory memPost Post
+            memPost = Post {
+                id: post.id,
+                creator: post.creator,
+                content: post.content,
+                upvotes: post.upvotes,
+                downvotes: post.downvotes
+            }
+            append(memPosts, memPost)
+    posts = memPosts
 
 // getUsersVote() is an invokable endpoint to retrieve
 // the vote of the current user for a specific post (id)

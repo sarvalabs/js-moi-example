@@ -90,7 +90,11 @@ const AssetManager = ({ wallet, showConnectModal }) => {
             name="amount"
           />
         </div>
-        <button className="btn btn--grey" onClick={transferAsset} disabled={interacting}>
+        <button
+          className="btn btn--grey"
+          onClick={transferAsset}
+          disabled={interacting || !receiver || !amount || !assetId}
+        >
           <span style={{ marginRight: "10px" }}>Transfer Asset</span>
           <Loader color={"#374151"} size={20} loading={interacting} />
         </button>

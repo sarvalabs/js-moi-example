@@ -71,7 +71,11 @@ const AssetFactory = ({ wallet, showConnectModal }) => {
             name="supply"
           />
         </div>
-        <button className="btn btn--grey" onClick={createAsset} disabled={interacting}>
+        <button
+          className="btn btn--grey"
+          onClick={createAsset}
+          disabled={interacting || !supply || !symbol}
+        >
           <span style={{ marginRight: "10px" }}>Create Asset</span>
           <Loader color={"#374151"} size={20} loading={interacting} />
         </button>
